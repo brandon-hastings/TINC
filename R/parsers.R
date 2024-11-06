@@ -254,8 +254,7 @@ load_VCF_Strelka = function(file) {
 # Pull allele depths from normal and tumour
   SNVnADtAD <- vcfSmallVarFilt[, c(1, 2, 4, 5, 7, 9, 10, 11)] %>%
     dplyr::rename_all(~ c("CHROM", "POS", "REF", "ALT", "FILTER", "FORMAT", "normal", "tumour")) %>%
-    purrr::pmap_dfr(., pullAD, .id = "ID") %>%
-    tidyr::separate(ID, into = c('chr', 'from', 'to', 'ref', 'alt'), sep = ':') %>%
+    tidyr::separate(purrr::pmap_dfr(., pullAD), into = c('chr', 'from', 'to', 'ref', 'alt'), sep = ':') %>%
     mutate(from = as.numeric(from), to = as.numeric(to),
          n_ref_count = as.numeric(n_ref_count), n_alt_count = as.numeric(n_alt_count),
          t_ref_count = as.numeric(t_ref_count), t_alt_count = as.numeric(t_alt_count)) %>%
